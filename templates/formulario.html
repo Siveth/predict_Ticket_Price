@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clasificador de estrellas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: flex;
+            margin: 0;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        #formulario {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            color: #555;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        #resultado {
+            margin-top: 20px;
+            color: #333;
+        }
+    </style>
+    <script>
+        function clasificarInsecto(event) {
+            event.preventDefault();
+            const Pclass = document.getElementById('Pclass').value;
+            const Age = document.getElementById('Age').value;
+            const SibSp = document.getElementById('SibSp').value;
+            const Ticket = document.getElementById('Ticket').value;
+            const Fare = document.getElementById('Fare').value;
+            const Embarked = document.getElementById('Embarked').value;
+            const Sex_female = document.getElementById('Sex_female').value;
+            const Sex_male = document.getElementById('Sex_male').value;
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `Pclass=${Pclass}&Age=${Age}&SibSp=${SibSp}&Ticket=${Ticket}&Fare=${Fare}&Embarked=${Embarked}&Sex_female=${Sex_female}&Sex_male=${Sex_male}`,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('resultado').innerText = 'Error: ' + data.error;
+                } else {
+                    document.getElementById('resultado').innerText = 'Accurazy: ' + data.categoria;
+                }
+            })
+            .catch(error => {
+                document.getElementById('resultado').innerText = 'Error en la solicitud.';
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Predicción Titanic</h1>
+    <br>
+    <p></p>
+    <form id="formulario" onsubmit="clasificarInsecto(event)">
+        <label for="Pclass">Pclass:</label>
+        <input type="text" id="Pclass" name="Pclass"><br>
+
+        <label for="Age">Age:</label>
+        <input type="text" id="Age" name="Age"><br>
+
+        <label for="SibSp">SibSp:</label>
+        <input type="text" id="SibSp" name="SibSp"><br>
+
+        <label for="Ticket">Ticket:</label>
+        <input type="text" id="Ticket" name="Ticket"><br>
+
+        
+        <label for="Fare">Fare:</label>
+        <input type="text" id="Fare" name="Fare"><br>
+
+        <label for="Embarked">Embarked:</label>
+        <input type="text" id="Embarked" name="Embarked"><br>
+
+        <label for="Sex_female">Sex_female:</label>
+        <input type="text" id="Sex_female" name="Sex_female"><br>
+        <label for="Sex_male">Sex_male:</label>
+        <input type="text" id="Sex_male" name="Sex_male"><br>
+
+        <input type="submit" value="Enviar">
+    </form>
+    <p id="resultado"></p>
+</body>
+</html>
+
+
+<!-- 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cluster Prediction</title>
+</head>
+<body>
+    <h1>Cluster Prediction</h1>
+    <form id="predictionForm">
+         Ajusta estos campos según tus características de entrada 
+        <label for="feature1">Feature 1:</label>
+        <input type="text" id="feature1" name="feature1"><br><br>
+        <label for="feature2">Feature 2:</label>
+        <input type="text" id="feature2" name="feature2"><br><br>
+        Añade más campos según tus características 
+
+        <button type="button" onclick="makePrediction()">Predict Cluster</button>
+    </form>
+    <p id="result"></p>
+
+    <script>
+        function makePrediction() {
+            const feature1 = document.getElementById('feature1').value;
+            const feature2 = document.getElementById('feature2').value;
+            // Añade más características según sea necesario
+
+            fetch('/predict', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({feature1: feature1, feature2: feature2}), // Ajusta según tus características
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = 'Cluster: ' + data.cluster;
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html> -->
+
+<!-- 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Detección de Anomalías</title>
+</head>
+<body>
+    <h1>Detección de Anomalías</h1>
+    <form id="anomalyForm">
+        <label for="feature1">Feature 1:</label>
+        <input type="text" id="feature1" name="feature1"><br><br>
+        <label for="feature2">Feature 2:</label>
+        <input type="text" id="feature2" name="feature2"><br><br>
+        <button type="button" onclick="detectAnomaly()">Detectar Anomalías</button>
+    </form>
+    <p id="result"></p>
+
+    <script>
+        function detectAnomaly() {
+            const feature1 = document.getElementById('feature1').value;
+            const feature2 = document.getElementById('feature2').value;
+
+            fetch('/detect_anomaly', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `feature1=${feature1}&feature2=${feature2}`,
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = 'Resultado: ' + data.result;
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
+
+
+El modelo debe quedar asi 
+import pandas as pd
+import numpy as np
+from sklearn.ensemble import IsolationForest
+import pickle
+
+# Generar datos aleatorios para el ejemplo
+np.random.seed(42)
+data = np.random.randn(100, 2)
+
+# Convertir a un DataFrame de pandas
+df = pd.DataFrame(data, columns=['Feature1', 'Feature2'])
+
+# Entrenar el modelo de Isolation Forest
+model = IsolationForest(contamination=0.1)
+model.fit(df[['Feature1', 'Feature2']])
+
+# Guardar el modelo entrenado
+with open('isolation_forest_model.pkl', 'wb') as file:
+    pickle.dump(model, file)
+
+import numpy as np
+import pandas as pd
+from sklearn.cluster import KMeans
+import pickle
+
+# Generar datos aleatorios para el ejemplo
+np.random.seed(42)
+data = np.random.randn(100, 2)
+
+# Convertir a un DataFrame de pandas
+df = pd.DataFrame(data, columns=['Feature1', 'Feature2'])
+
+# Entrenar el modelo de KMeans
+kmeans = KMeans(n_clusters=3)
+kmeans.fit(df[['Feature1', 'Feature2']])
+
+# Guardar el modelo entrenado
+with open('kmeans_model.pkl', 'wb') as file:
+    pickle.dump(kmeans, file)
+

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Predict Ticket Price</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            border-color: #0056b3;
+            outline: none;
+        }
+
+        .submit-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .submit-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background-color: rgba(0, 0, 0, 0.5); 
+            justify-content: center; 
+            align-items: center; 
+        }
+
+        .modal-content {
+            background: white; 
+            padding: 20px; 
+            border-radius: 8px; 
+            width: 90%; 
+            max-width: 500px; 
+            position: relative;
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+        }
+
+        .close-btn {
+            position: absolute; 
+            top: 10px; 
+            right: 10px; 
+            background: #e53e3e; 
+            color: white; 
+            border: none; 
+            padding: 5px 10px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 16px;
+        }
+
+        .close-btn:hover {
+            background: #c53030;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Predicción de precio del boleto</h1>
+        <form id="predict-form" action="/predict" method="post">
+            <div class="form-group">
+                <label for="Distacia">Distancia:</label>
+                <input type="text" name="Distacia" required>
+            </div>
+            <div class="form-group">
+                <label for="Cant_Casetas">Cantidad Casetas:</label>
+                <input type="text" name="Cant_Casetas" required>
+            </div>
+            <div class="form-group">
+                <label for="Gasto_Casetas">Gasto Casetas:</label>
+                <input type="text" name="Gasto_Casetas" required>
+            </div>
+            <div class="form-group">
+                <label for="Consumo_gas">Consumo de gasolina:</label>
+                <input type="text" name="Consumo_gas" required>
+            </div>
+            <div class="form-group">
+                <label for="precio_gas">Precio de la gasolina:</label>
+                <input type="text" name="precio_gas" required>
+            </div>
+            <div class="form-group">
+                <label for="gasto_total_gas">Gasto total en gasolina:</label>
+                <input type="text" name="gasto_total_gas" required>
+            </div>
+            <button type="submit" class="submit-button">Predecir costo</button>
+        </form>
+    </div>
+
+    <!-- Modal for displaying results -->
+    <div id="result-modal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">X</button>
+            <h2>Resultados de la predicción</h2>
+            <p id="prediction-result"></p>
+        </div>
+    </div>
+
+    <script>
+        function showModal(result) {
+            document.getElementById('prediction-result').textContent = `Precio recomendado: ${result}`;
+            document.getElementById('result-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('result-modal').style.display = 'none';
+        }
+
+        document.getElementById('predict-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => showModal(data.predicted_price))
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>

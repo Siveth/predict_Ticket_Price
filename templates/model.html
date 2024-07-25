@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Titanic Survived</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                clifford: '#da373d',
+              }
+            }
+          }
+        }
+      </script>
+    <script>
+        function clasificarInsecto(event) {
+            event.preventDefault();
+            const Pclass = document.getElementById('Pclass').value;
+            const Sex = document.getElementById('Sex').value;
+            const Age = document.getElementById('Age').value;
+            const SibSp = document.getElementById('SibSp').value;
+            const Cabin = document.getElementById('Cabin').value;
+            const Embarked = document.getElementById('Embarked').value;
+
+            fetch('/predict_model', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `Pclass=${Pclass}&Sex=${Sex}&Age=${Age}&SibSp=${SibSp}&Cabin=${Cabin}&Embarked=${Embarked}`,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById('resultado').innerText = 'Error: ' + data.error;
+                } else {
+                    let survived = data.price === 1 ? 'Vivo': 'Muerto'
+                    document.getElementById('resultado').innerText = 'Survived: ' + survived;        
+                }
+            })
+            .catch(error => {
+                document.getElementById('resultado').innerText = 'Error en la solicitud.';
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class=" w-screen h-screen flex flex-col items-center ">
+        <h1 class="text-3xl font-bold p-5">Titanic Survived</h1>
+    <form class="w-2/3 p-5 shadow-2xl border-2 flex flex-col bg-slate-100" id="formulario" onsubmit="clasificarInsecto(event)">
+        <label for="Pclass" class="text-xl font-bold">Pclass:</label>
+        <input type="number" id="Pclass" name="Pclass" class="p-2 border-2 rounded-xl my-4">
+        <label for="Sex" class="text-xl font-bold">Pclass:</label>
+        <select name="Sex" id="Sex" class=" p-2 border-2 rounded-xl my-4 ">
+            <option value="male">Hombre</option>
+            <option value="female">Mujer</option>
+        </select>
+        <label for="Age" class="text-xl font-bold">Edad:</label>
+        <input type="number" id="Age" name="Age" class="p-2 border-2 rounded-xl my-4">
+        <label for="SibSp" class="text-xl font-bold">SibSp:</label>
+        <input type="number" id="SibSp" name="SibSp" class="p-2 border-2 rounded-xl my-4">
+        <label for="Cabin" class="text-xl font-bold">Cabin:</label>
+        <input type="tex" id="Cabin" name="Cabin" class="p-2 border-2 rounded-xl my-4"> 
+        <label for="Embarked" class="text-xl font-bold">Embarked:</label>
+        <select name="Embarked" id="Embarked" class=" p-2 border-2 rounded-xl my-4 ">
+            <option value="S">S</option>
+            <option value="C">C</option>
+            <option value="Q">Q</option>
+        </select>
+
+        <input type="submit" class=" rounded bg-blue-500 hover:bg-blue-700 text-white font-bold p-2" value="Enviar">
+    </form>
+    <p class=" text-3xl font-bold p-5"  id="resultado"></p>
+    </div>
+</body>
+</html>
