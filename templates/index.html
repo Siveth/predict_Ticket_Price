@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Predict Ticket Price</title>
+    <title>Predicción de Costo de Mudanza</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -112,31 +112,39 @@
 </head>
 <body>
     <div class="container">
-        <h1>Predicción de precio del boleto</h1>
+        <h1>Predicción de Costo de Mudanza</h1>
         <form id="predict-form" action="/predict" method="post">
             <div class="form-group">
-                <label for="Distacia">Distancia:</label>
-                <input type="text" name="Distacia" required>
+                <label for="Origen">Origen:</label>
+                <input type="text" name="Origen" required>
             </div>
             <div class="form-group">
-                <label for="Cant_Casetas">Cantidad Casetas:</label>
-                <input type="text" name="Cant_Casetas" required>
+                <label for="Destino">Destino:</label>
+                <input type="text" name="Destino" required>
             </div>
             <div class="form-group">
-                <label for="Gasto_Casetas">Gasto Casetas:</label>
-                <input type="text" name="Gasto_Casetas" required>
+                <label for="Distancia">Distancia:</label>
+                <input type="text" name="Distancia" required>
             </div>
             <div class="form-group">
-                <label for="Consumo_gas">Consumo de gasolina:</label>
-                <input type="text" name="Consumo_gas" required>
+                <label for="Size">Tamaño:</label>
+                <input type="text" name="Size" required>
             </div>
             <div class="form-group">
-                <label for="precio_gas">Precio de la gasolina:</label>
-                <input type="text" name="precio_gas" required>
+                <label for="Peso">Peso:</label>
+                <input type="text" name="Peso" required>
             </div>
             <div class="form-group">
-                <label for="gasto_total_gas">Gasto total en gasolina:</label>
-                <input type="text" name="gasto_total_gas" required>
+                <label for="Estacion">Estación:</label>
+                <input type="text" name="Estacion" required>
+            </div>
+            <div class="form-group">
+                <label for="Fragilidad">Fragilidad:</label>
+                <input type="text" name="Fragilidad" required>
+            </div>
+            <div class="form-group">
+                <label for="Urgencia">Urgencia:</label>
+                <input type="text" name="Urgencia" required>
             </div>
             <button type="submit" class="submit-button">Predecir costo</button>
         </form>
@@ -153,7 +161,7 @@
 
     <script>
         function showModal(result) {
-            document.getElementById('prediction-result').textContent = `Precio recomendado: ${result}`;
+            document.getElementById('prediction-result').textContent = `Costo estimado: ${result}`;
             document.getElementById('result-modal').style.display = 'flex';
         }
 
@@ -164,12 +172,19 @@
         document.getElementById('predict-form').addEventListener('submit', function(event) {
             event.preventDefault();
             const formData = new FormData(this);
+            
             fetch('/predict', {
                 method: 'POST',
                 body: formData
             })
             .then(response => response.json())
-            .then(data => showModal(data.predicted_price))
+            .then(data => {
+                if (data.error) {
+                    showModal(`Error: ${data.error}`);
+                } else {
+                    showModal(data.prediction);
+                }
+            })
             .catch(error => console.error('Error:', error));
         });
     </script>
